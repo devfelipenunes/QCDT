@@ -58,7 +58,7 @@ def solve_local(labels, neighbors, word):
     return {v for j,v in enumerate(ns) if coef>>j&1}
 
 
-def recover_linear(n,d,probe,*,seed=42,checks=10):
+def recover_linear(n,d,probe,*,seed=42,checks=10,deterministic=False):
     """Reconstruct cubic triples under the ideal codegree-one promise."""
     if n<3 or d<1 or checks<1:raise ValueError('invalid configuration')
     cache={}
@@ -88,7 +88,8 @@ def recover_linear(n,d,probe,*,seed=42,checks=10):
         colors[v]=next(c for c in range(len(used)+1) if c not in used)
     bits=max(colors.values(),default=0).bit_length()
     signature=dict.fromkeys(choices,0)
-    masks,labels=local_codes(N,seed=seed) if bits else ([],[])
+    from .deterministic_codes import deterministic_codes
+    masks,labels=(deterministic_codes(N) if deterministic else local_codes(N,seed=seed)) if bits else ([],[])
     for t in range(bits):
         a=pack(v for v in colors if colors[v]>>t&1)
         words=[query(a,b)^contract(F,a,b) for b in masks]
