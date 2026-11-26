@@ -14,13 +14,21 @@ jobs:
         with:
           python-version: '3.13'
       - run: python -m unittest discover -s tests -v
-  qiskit:
+  qiskit-aer:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: python -m pip install qiskit==2.2.3
-      - run: python -c "import qiskit; print(qiskit.__version__)"
+      - run: python -m pip install -r requirements-qiskit.txt
+      - run: python -c "import qiskit, qiskit_aer; print(qiskit.__version__, qiskit_aer.__version__)"
+      - run: python -m pip freeze > environment.txt
       - run: python -m unittest discover -s tests -v
+      - run: python -m benchmarks.resources resources.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: simulator-resources
+          path: |
+            resources.json
+            environment.txt
