@@ -30,6 +30,7 @@ jobs:
       - run: python -m benchmarks.aer_recovery
       - run: python -m benchmarks.known_support
       - run: python -m benchmarks.snapshot
+      - run: python -m benchmarks.snapshot_audited
       - uses: actions/upload-artifact@v4
         with:
           name: simulator-resources
@@ -40,3 +41,4 @@ jobs:
             aer-recovery.json
             known-support.json
             snapshot-results.json
+            snapshot-audited-results.json

@@ -1,24 +1,31 @@
 # QCDT — Quantum Coded Derivative Tomography
 
-Experimental research into reconstruction of sparse cubic Boolean phase oracles.
+Experimental research into sparse cubic Boolean phase-oracle reconstruction.
 **Research candidate, not a peer-reviewed discovery.** Novelty, physical quantum
 advantage and general noise robustness are not established.
 
-This first consolidation PR freezes a readable ideal-oracle reference
-implementation of the round-12 v0.10 construction (linear projection and coloring,
-plus asymmetric BCH recovery for general codegree). It is not a byte-for-byte
-import of the twelve historical rounds. The coded acquisition, noisy recovery
-and historical comparators still require migration. Root decoding uses a scan
-over admissible labels instead of the earlier trace-factorization routine.
+## Implementations and reproducibility
+
+- Ideal reference: BCH, projection/colouring and asymmetric recovery.
+- Known-support refinement: codegree-one recovery using local linear systems.
+- Legacy adapters: verified historical v0.4, v0.5, v0.8 and simplex acquisition.
+- Exact truth-table and Qiskit backends; Aer shot and historical device snapshots.
+- Ten original archives under historical/archives, with integrity manifest and
+  complete historical replay workflow. All 94 Python occurrences executed in
+  the historical replay; module smoke checks and output discrepancies are
+  recorded separately from scientific correctness.
 
 ## Run (Python 3.13)
 
 ```bash
 python -m unittest discover -s tests -v
+python -m pip install -r requirements-historical.txt
+python -m unittest discover -s tests -v
+python scripts/verify_archives.py historical/archives
 ```
 
-No third-party packages are required for the reference tests. Optional Qiskit
-validation uses the circuit adapter and the separate CI job.
+Without optional dependencies, simulator and legacy tests may be skipped.
+See CI for actual executed checks.
 
 ```python
 from qcdt import recover, contract
@@ -28,21 +35,20 @@ result = recover(6, 1, 1, lambda a,b: contract(hidden,a,b), seed=42)
 print(result)
 ```
 
-The learner receives only a probe callback. For a cubic phase oracle, each
-probe corresponds to four coherent oracle calls and a Bernstein–Vazirani
-measurement. The reference also contains an independent truth-table Fourier
-backend and an optional Qiskit circuit backend. It reconstructs cubic terms,
-not the original gate ordering or global phase.
+The learner receives only a probe callback. For an exact cubic Boolean phase
+oracle, each probe corresponds to four coherent calls and a Bernstein–Vazirani
+measurement. The reference recovers cubic coefficients, not original gate order,
+global phase or arbitrary quantum circuits. The ideal holdout is probabilistic
+under explicit assumptions. A public gate list makes the problem trivial
+classically; synthesized benchmarks do not establish physical advantage.
 
 ## Scientific status
 
-- Reference tests: exhaustive small hypergraphs, Pasch ambiguity, all 256
-  mask pairs for a mixed-degree polynomial, a quartic counterexample, and
-  algebraic scaling.
-- Separate acquisition and verification query counters.
-- Ideal model only in the reference API; out-of-promise recovery is not certified
-  universally. The independent holdout is probabilistic.
-- Local execution: Python 3.13.5, 6 test methods passed, 1 optional Qiskit method
-  skipped. CI and hardware execution must be verified separately.
-- See [specification](docs/MODEL.md), [roadmap](docs/ROADMAP.md) and
-  [historical archive manifest](docs/ARCHIVES.sha256).
+See [model](docs/MODEL.md), [pre-hardware audit](docs/PRE_HARDWARE_AUDIT.md),
+[prior-art decision](docs/PRIOR_ART_DECISION.md), [historical adapters](docs/LEGACY_ADAPTERS.md),
+[roadmap](docs/ROADMAP.md) and [archive manifest](docs/ARCHIVES.sha256).
+The audited matched-cap benchmark uses only public promise parameters for
+planning and applies holdout to both quantum methods. Historical snapshot
+results remain available with their methodological limitations.
+
+No physical QPU has been used. Publication requires independent review.
