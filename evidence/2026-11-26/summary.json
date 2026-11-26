@@ -1,0 +1,112 @@
+{
+  "schema": "qcdt-permanent-summary-v1",
+  "source_run": 45749367190,
+  "source_pr_head": "87e4c14a970981282554b62ee15045b56c648891",
+  "python": "3.13.18",
+  "runner_image": "ubuntu-26.04",
+  "runner_image_version": "20261116.202.1",
+  "source_artifact": 15085290685,
+  "files": {
+    "environment.txt": {
+      "bytes": 575,
+      "sha256": "9e1b6e99b04c1f5a5d9715763b65d89b172a506c16aabea49ccfe9727198363a"
+    },
+    "evidence/independent/results.json": {
+      "bytes": 1188656,
+      "sha256": "8f43408d5158bde2a78b252d7da15f3a1959b690361e33ea28d10f74fd0f7783"
+    },
+    "snapshot-audited-results.json": {
+      "bytes": 777079,
+      "sha256": "0b75f53e23d8ccc8fab77986d93a227d54b22b0bbbcc7f21c68f44f5aa7efc73"
+    },
+    "matched-results.json": {
+      "bytes": 10529,
+      "sha256": "88b4f30a0938155eaab9a6c28e9230a0417ece76acb4dc2e4e6dda55f11983b3"
+    },
+    "resources.json": {
+      "bytes": 3482,
+      "sha256": "3c7a836e2513716255bfe30dc9eb298889abffc7a8b646d5001a09c0f5389274"
+    },
+    "aer-recovery.json": {
+      "bytes": 18151,
+      "sha256": "58997b3333177795610c4ca4d28ccefa61c01bd01bbf77baf680abfbb6978396"
+    },
+    "known-support.json": {
+      "bytes": 928,
+      "sha256": "621a9032b8ee51ef26de5d64c3f1e18411bdf688cbb6d20b5e6f58e9e976a4a9"
+    },
+    "snapshot-results.json": {
+      "bytes": 501867,
+      "sha256": "13da6821ba21b73109dd99109bae7406055e8192947197b0cd7b60fa49edcf7e"
+    }
+  },
+  "independent": {
+    "instances": 50,
+    "observations": 230,
+    "exact": 230,
+    "reversed_order_matches": true,
+    "median_queries": [
+      {
+        "n": 6,
+        "d": 2,
+        "lambda": 1,
+        "qcdt": 96,
+        "dense_certified": 64,
+        "known_support": 92,
+        "label_bits": 72,
+        "classical_value": 64
+      },
+      {
+        "n": 16,
+        "d": 2,
+        "lambda": 1,
+        "qcdt": 120,
+        "dense_certified": 264,
+        "known_support": 120,
+        "label_bits": 340,
+        "classical_value": 862.5
+      },
+      {
+        "n": 32,
+        "d": 4,
+        "lambda": 1,
+        "qcdt": 224,
+        "dense_certified": 1000,
+        "known_support": 224,
+        "label_bits": 1020,
+        "classical_value": 2839
+      },
+      {
+        "n": 64,
+        "d": 4,
+        "lambda": 1,
+        "qcdt": 264,
+        "dense_certified": 4008,
+        "known_support": 264,
+        "label_bits": 1456,
+        "classical_value": 6393
+      },
+      {
+        "n": 32,
+        "d": 4,
+        "lambda": 3,
+        "qcdt": 2668,
+        "dense_certified": 1000,
+        "classical_value": 2834
+      }
+    ]
+  },
+  "audited_snapshot": {
+    "qcdt": {
+      "exact": 4,
+      "rejected": 14,
+      "wrong": 0
+    },
+    "dense_certified": {
+      "exact": 11,
+      "rejected": 7,
+      "wrong": 0
+    }
+  },
+  "limitations": "Summary of verified run and downloaded artifact, not a substitute for raw files. Different value/phase access models. No QPU or speedup claim."
+}

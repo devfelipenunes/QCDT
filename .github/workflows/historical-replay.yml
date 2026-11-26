@@ -16,19 +16,22 @@ jobs:
       matrix:
         archive: [bundle, round4, round5, round6, round7, round8, round9, round10, round11, round12]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
-          python-version: '3.13'
-      - run: python -m pip install -r requirements-historical.txt
+          python-version: '3.13.18'
+      - run: python -m pip install -r requirements-historical.lock.txt
+      - run: python -m pip check
+      - run: python -m scripts.check_environment requirements-historical.lock.txt --output historical-environment.json
       - run: python scripts/verify_archives.py historical/archives
       - run: python -m scripts.import_archives historical/archives --destination verified
       - run: python -m scripts.replay_all historical/archives quantum_research_${{ matrix.archive }}.zip --output replay --timeout 240 --workers 3
       - run: python -m pip freeze > replay/environment.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
           name: history-${{ matrix.archive }}
           path: |
             replay/
             verified/inventory.json
+            historical-environment.json
