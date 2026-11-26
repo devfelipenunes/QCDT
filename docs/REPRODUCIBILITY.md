@@ -12,9 +12,11 @@ image ID, platform, environment and source commit for each run.
 The full simulator job rejects any skipped tests; the lightweight reference
 job deliberately permits optional skips. Check the full job before merge.
 Artifact manifests hash exact result files and record source/run metadata.
-The permanent compact summary in evidence/2026-11-26 records verified
-results and hashes of downloaded raw files. GitHub artifacts can expire:
-preserve full raw artifacts in a research archive before manuscript submission.
+The permanent compact summary and two original CI ZIP artifacts in
+evidence/2026-11-26 record verified results, raw data and hashes. GitHub
+artifacts can expire: archive future manuscript evidence in the same way.
+The dedicated oracle-control workflow also uses the simulator lock and
+strict test runner.
 The original ten ZIP archives already live in Git unchanged.
 
 Run in a clean Python 3.13.18 environment:
