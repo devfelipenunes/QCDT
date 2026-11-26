@@ -35,11 +35,13 @@ jobs:
       - run: python -m benchmarks.snapshot_audited
       - run: python -m benchmarks.independent --output evidence/independent/results.json --reverse-check
       - run: python -m benchmarks.hypotheses
-      - run: python -m scripts.evidence_manifest --output evidence-manifest.json hypotheses-results.json resources.json environment.txt environment.json matched-results.json aer-recovery.json known-support.json snapshot-results.json snapshot-audited-results.json evidence/independent/results.json
+      - run: python -m benchmarks.general_word_noise
+      - run: python -m scripts.evidence_manifest --output evidence-manifest.json general-word-noise-results.json hypotheses-results.json resources.json environment.txt environment.json matched-results.json aer-recovery.json known-support.json snapshot-results.json snapshot-audited-results.json evidence/independent/results.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: simulator-resources
           path: |
+            general-word-noise-results.json
             hypotheses-results.json
             resources.json
             environment.txt
