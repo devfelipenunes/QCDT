@@ -22,12 +22,14 @@ jobs:
         with:
           python-version: '3.13'
       - run: python -m pip install -r requirements-qiskit.txt
-      - run: python -c "import qiskit, qiskit_aer; print(qiskit.__version__, qiskit_aer.__version__)"
+      - run: python -c "import qiskit, qiskit_aer, qiskit_ibm_runtime; print(qiskit.__version__, qiskit_aer.__version__, qiskit_ibm_runtime.__version__)"
       - run: python -m pip freeze > environment.txt
       - run: python -m unittest discover -s tests -v
       - run: python -m benchmarks.resources resources.json
       - run: python -m benchmarks.matched
       - run: python -m benchmarks.aer_recovery
+      - run: python -m benchmarks.known_support
+      - run: python -m benchmarks.snapshot
       - uses: actions/upload-artifact@v4
         with:
           name: simulator-resources
@@ -36,3 +38,5 @@ jobs:
             environment.txt
             matched-results.json
             aer-recovery.json
+            known-support.json
+            snapshot-results.json
