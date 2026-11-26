@@ -1,4 +1,5 @@
 """Local Aer simulation from packaged historical IBM device snapshots."""
+from time import perf_counter
 from .backends import derivative_circuit
 from .aer_backend import majority_word
 
@@ -22,7 +23,7 @@ def snapshot_metadata(backend):
 
 class SnapshotProbe:
     """Bounded total shots, actual transpiled circuits and raw measured counts."""
-    def __init__(self, oracle, backend, *, shots, budget, seed=42, noisy=True, cache=None):
+    def __init__(self, oracle, backend, *, shots, budget, seed=42, noisy=True, cache=None, circuit_builder=derivative_circuit):
         from qiskit_aer import AerSimulator
         if shots<1 or shots%2==0 or budget<shots:raise ValueError('invalid shots/budget')
         if oracle.num_qubits>backend.num_qubits:raise ValueError('device too small')
@@ -31,6 +32,8 @@ class SnapshotProbe:
                   if noisy else AerSimulator(max_parallel_threads=1))
         # Only reuse this cache within the same oracle, backend and transpiler settings.
         self.cache={} if cache is None else cache
+        self.circuit_builder=circuit_builder
+        self.compile_seconds=0.;self.simulation_seconds=0.
         self.records=[];self.used=0;self.twoq=0;self.instructions=0;self.depth=0
 
     def __call__(self,a,b):
@@ -38,13 +41,17 @@ class SnapshotProbe:
         if self.used+self.shots>self.budget:raise ValueError('total shot budget exhausted')
         key=(a,b)
         if key not in self.cache:
-            qc=derivative_circuit(self.oracle,a,b);qc.measure_all()
+            started=perf_counter()
+            qc=self.circuit_builder(self.oracle,a,b);qc.measure_all()
             self.cache[key]=transpile(qc,backend=self.backend,optimization_level=1,seed_transpiler=1729)
+            self.compile_seconds+=perf_counter()-started
         tr=self.cache[key]
         count2=sum(len(x.qubits)==2 and x.operation.name!='barrier' for x in tr.data)
         self.used+=self.shots;self.twoq+=count2*self.shots
         self.instructions+=tr.size()*self.shots;self.depth=max(self.depth,tr.depth())
+        started=perf_counter()
         counts=self.sim.run(tr,shots=self.shots,seed_simulator=self.seed+len(self.records)).result().get_counts()
+        self.simulation_seconds+=perf_counter()-started
         self.records.append(dict(a=a,b=b,counts=dict(counts),depth=tr.depth(),twoq_gates=count2,
                                  instructions=tr.size(),layout=str(tr.layout)))
         return majority_word(counts,self.oracle.num_qubits)
@@ -53,4 +60,4 @@ class SnapshotProbe:
         return dict(budget=self.budget,shots_used=self.used,shots_per_circuit=self.shots,
                     phase_calls=4*self.used,circuits=len(self.records),
                     twoq_executions=self.twoq,instructions_executed=self.instructions,
-                    max_depth=self.depth)
+                    max_depth=self.depth,compile_seconds=self.compile_seconds,simulation_seconds=self.simulation_seconds)
